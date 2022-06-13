@@ -22,18 +22,18 @@
     {
       "containerName": "nginx",
       "containerPort": 80,
-      "targetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-1:707386184071:targetgroup/example-prod-ebisawa/06f1649b058e4c44"
+      "targetGroupArn": "{{ tfstate `data.aws_lb_target_group.this.arn` }}"
     }
   ],
   "networkConfiguration": {
     "awsvpcConfiguration": {
       "assignPublicIp": "DISABLED",
       "securityGroups": [
-        "sg-08d445b5c027ec44e"
+        "{{ tfstate `data.aws_security_group.vpc.id` }}"
       ],
       "subnets": [
-        "subnet-06318ff72223cf83e",
-        "subnet-0e8669c6d62d0ac26"
+        "{{ tfstate `data.aws_subnet.private['a'].id` }}",
+        "{{ tfstate `data.aws_subnet.private['c'].id` }}"
       ]
     }
   },
@@ -46,15 +46,15 @@
   "tags": [
     {
       "key": "Env",
-      "value": "prod"
+      "value": "{{ must_env `ENV_NAME` }}"
     },
     {
       "key": "System",
-      "value": "example"
+      "value": "{{ must_env `SYSTEM_NAME` }}"
     },
     {
       "key": "Name",
-      "value": "example-prod-ebisawa"
+      "value": "{{ must_env `SYSTEM_NAME` }}-{{ must_env `ENV_NAME` }}-{{ must_env `SERVICE_NAME` }}"
     }
   ]
 }
