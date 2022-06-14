@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      # - feature/push_images_to_ecr
+      # - feature/deploy_fargate
 
 env:
   AWS_REGION: ap-northeast-1
@@ -89,3 +89,14 @@ jobs:
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Download ecspresso
+        uses: kayac/ecspresso@v0
+        with:
+          version: v1.5.3
+
+      - name: Register task definition
+        run: ecspresso register --config config_prod.yaml
+        working-directory: ./ecspresso
+        #
+        #
